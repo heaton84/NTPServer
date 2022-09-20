@@ -50,3 +50,25 @@ This method sets the reference time from an external source. The two parameters 
 The more often this is set, the more accurate the server will be. In the case of a GPS time server, you should capture `refTimeMillis` at the rising edge of the PPS signal, then call `setReferenceTime` once the serial time data has been decoded.
 
 ## Reading Variables
+
+To enable variable reading through NTP control packets, you need to hook into the `onReadVariable` callback. Until the callback is hooked into, any control requests against the server will fail. To set the callback, do the following:
+
+```
+int myCallbackFunction(const char *var, char *lpBuffer, int cbBuffer)
+{
+	int result = L_NTP_R_ERROR;
+	
+	if (!strncasecmp(var, "MY_VARIABLE_NAME_GOES_HERE", strlen(var)))
+	{
+		// Note: Take care not to exceed the buffer space as defined by cbBuffer
+		strcpy(lpBuffer, "DATA GOES HERE");
+		
+		result = L_NTP_R_SUCCESS; // Inform server class that we have a valid response
+	}
+	
+	return result;
+}
+
+myServer.onReadVariable(myCallbackFunction);
+
+```
