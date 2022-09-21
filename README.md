@@ -1,6 +1,8 @@
 # NTPServer
 An Arduino-targetted NTP Server class that supports both basic NTP requests, and a limited subset of control requests. I built this library to also serve up timezone information via NTP management requests.
 
+Note that the documentation is currently a work in progress.
+
 ## Quick Start
 
 You'll need 3 things to get this up and running:
@@ -38,9 +40,7 @@ Lastly, the server will need to know the current time, which brings us to:
 
 ## Setting Server Time
 
-```
-void setReferenceTime(struct tm refTime, t_ntpSysClock refTimeMillis);
-```
+#### void setReferenceTime(struct tm refTime, t_ntpSysClock refTimeMillis)
 
 This method sets the reference time from an external source. The two parameters involved are as follows:
 
@@ -48,6 +48,36 @@ This method sets the reference time from an external source. The two parameters 
 2. `refTimeMillis`: The processor time (i.e. a snapshot of `millis()`) that the reference time was taken at.
 
 The more often this is set, the more accurate the server will be. In the case of a GPS time server, you should capture `refTimeMillis` at the rising edge of the PPS signal, then call `setReferenceTime` once the serial time data has been decoded.
+
+#### void setReferenceTime(struct tm refTime)
+
+Sets the reference time, taking the current value of millis() for convenience (note: this method is not as accurate).
+
+## NTP Configuration
+
+#### setStratum(char stratum)
+
+Sets the current stratum of the server. Valid values are 1 through 16. The stratum is reported back to clients with every request.
+
+#### setMaxPollInterval(int pollIntervalSeconds)
+
+Sets the maximum poll interval that will be reported to clients. Note that the actual interval that will be locked in will be to the closest power of 2, as the NTP protocol definition of poll interval is 2 to the power of the interval.
+
+#### setServerPrecision(double precisionInSeconds)
+
+Sets the reported server precision, in seconds.
+
+#### setRootDelay(double delayInSeconds)
+
+Sets the root delay of the time source.
+
+#### setRootDispersion(double dispersionInSeconds)
+
+Sets the root dispersion of the time source.
+
+#### setReferenceId(const char * referenceId)
+
+Sets the NTP reference ID, in character format. Note that this function will fail if the reference ID is more than 4 bytes (exclusing null terminator).
 
 ## Reading Variables
 
