@@ -23,8 +23,10 @@ WiFiUDP ntpUdpHandler;
 Now we can initialize the library with the `begin` method:
 
 ```
-ntpUdpHandler.begin(123);          // 123 is NTP port
-myServer.begin(ntpUdpHandler);
+void setup() {
+	ntpUdpHandler.begin(123);          // 123 is NTP port
+	myServer.begin(ntpUdpHandler);
+}
 ```
 
 The next step is to add a call to `update` in your main loop:
@@ -38,6 +40,8 @@ void loop() {
 
 Lastly, the server will need to know the current time, which brings us to:
 
+---
+
 ## Setting Server Time
 
 #### void setReferenceTime(struct tm refTime, t_ntpSysClock refTimeMillis)
@@ -47,13 +51,13 @@ This method sets the reference time from an external source. The two parameters 
 1. `refTime`: The reference time (i.e. the time as parsed from the GPS receiver)
 2. `refTimeMillis`: The processor time (i.e. a snapshot of `millis()`) that the reference time was taken at.
 
-The more often this is set, the more accurate the server will be. In the case of a GPS time server, you should capture `refTimeMillis` at the rising edge of the PPS signal, then call `setReferenceTime` once the serial time data has been decoded.
+The more often the reference time is set from an external source, the more accurate the server will be. In the case of a GPS time server, you should capture `refTimeMillis` at the rising edge of the PPS signal, then call `setReferenceTime` once the serial time data has been decoded.
 
 #### void setReferenceTime(struct tm refTime)
 
 Sets the reference time, taking the current value of millis() for convenience (note: this method is not as accurate).
 
-## NTP Configuration
+# NTP Configuration
 
 #### setStratum(char stratum)
 
@@ -79,7 +83,45 @@ Sets the root dispersion of the time source.
 
 Sets the NTP reference ID, in character format. Note that this function will fail if the reference ID is more than 4 bytes (exclusing null terminator).
 
-## Reading Variables
+# Other Functions
+
+#### begin(UDP &udp)
+
+Binds the server to a UDP listener and prepares it for execution. This should be called in your `setup()` routine. The decision was made to keep the UDP handler external to allow this library to work with both WiFi and Ethernet libraries with no modification.
+
+#### end()
+
+Stops all server activity and releases the UDP object.
+
+#### getElapsedTimeSinceSync()
+
+Returns the number of milliseconds since the last time sync was performed via `setReferenceTime`
+
+#### getCurrentTime(struct tm *outTime, t_ntpSysClock *outMilliseconds)
+
+Returns the current local time, which is the last reference time plus the number of milliseconds since the last clock synchronization. This will only be as accurate as your processor's clock.
+
+#### isClockSynchronized()
+
+Returns `true` if the server's clock is in a synchonized state. The clock may desynchronize if we have not had a recent `setReferenceTime` call. This "maximum synchronization interval" is currently hard-coded, but soon will be configurable.
+
+A note on clock synchronization: if the server determines that the clock is not in a synchonized state, all NTP requests will have the warning set that the clock is no longer synchonized (LI will be set to 3 and stratum will be set to 16).
+
+#### invalidateTimeSynch()
+
+Calling this function will force the clock to a desynchronized state. It is intended for the user to use this in extreme cases when the clock can no longer be trusted.
+
+#### getSuccessfulRequests(bool resetCounter)
+
+Returns the number of successful NTP requests serviced since the last inquiry. If `resetCounter` is set, the internal server counter will be set back to zero.
+
+#### getFailedRequests(bool resetCounter)
+
+Returns the number of malformed/rejected NTP requests serviced since the last inquiry. If `resetCounter` is set, the internal server counter will be set back to zero.
+
+---
+
+# Reading Variables
 
 To enable variable reading through NTP control packets, you need to hook into the `onReadVariable` callback. Until the callback is hooked into, any control requests against the server will fail. To set the callback, do the following:
 
