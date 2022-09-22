@@ -5,27 +5,17 @@ Note that the documentation is currently a work in progress.
 
 ## Quick Start
 
-You'll need 3 things to get this up and running:
-
-1. A network such as `WiFi` or `Ethernet` (with a UDP handler)
-2. An external time source
-3. An instance of NTPServer
-
-Future me will put in an example of starting up the wifi and udp handler.
-
 To initialize the NTP Server, you need to know what stratum and time reference you are using. In my case, I was obtaining my time source from a GPS receiver. This puts me in stratum 1 as a GPS reference:
 
 ```
-NTPServer myServer("GPS", L_NTP_STRAT_PRIMARY);   // Note: L_NTP_STRAT_PRIMARY=1
-WiFiUDP ntpUdpHandler;
+WiFiNTPServer myServer("GPS", L_NTP_STRAT_PRIMARY);   // Note: L_NTP_STRAT_PRIMARY=1
 ```
 
 Now we can initialize the library with the `begin` method:
 
 ```
 void setup() {
-	ntpUdpHandler.begin(123);          // 123 is NTP port
-	myServer.begin(ntpUdpHandler);
+	myServer.begin();
 }
 ```
 
