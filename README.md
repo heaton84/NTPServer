@@ -75,14 +75,6 @@ Sets the NTP reference ID, in character format. Note that this function will fai
 
 # Other Functions
 
-#### begin(UDP &udp)
-
-Binds the server to a UDP listener and prepares it for execution. This should be called in your `setup()` routine. The decision was made to keep the UDP handler external to allow this library to work with both WiFi and Ethernet libraries with no modification.
-
-#### end()
-
-Stops all server activity and releases the UDP object.
-
 #### getElapsedTimeSinceSync()
 
 Returns the number of milliseconds since the last time sync was performed via `setReferenceTime`
