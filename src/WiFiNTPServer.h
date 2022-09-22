@@ -1,5 +1,11 @@
 #pragma once
 
+/*
+ * WiFiNTPServer.h
+ *
+ * Implements a basic WiFi-compatible NTP Server. Tested on ESP8266.
+ */
+
 #include "NTPServer.h"
 #include <WiFiUdp.h>
 
