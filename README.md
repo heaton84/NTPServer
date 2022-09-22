@@ -112,10 +112,11 @@ int myCallbackFunction(const char *var, char *lpBuffer, int cbBuffer)
 {
 	int result = L_NTP_R_ERROR;
 	
-	if (!strncasecmp(var, "MY_VARIABLE_NAME_GOES_HERE", strlen(var)))
+	if (!strncasecmp(var, "TZ", strlen(var)))
 	{
 		// Note: Take care not to exceed the buffer space as defined by cbBuffer
-		strcpy(lpBuffer, "DATA GOES HERE");
+		// Report back the current timezone setting (POSIX format)
+		strcpy(lpBuffer, "EST+5EDT,M3.2.0/2,M11.1.0/2");
 		
 		result = L_NTP_R_SUCCESS; // Inform server class that we have a valid response
 	}
