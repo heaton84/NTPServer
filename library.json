@@ -1,0 +1,20 @@
+{
+  "name": "NTPServer",
+  "description": "NTPServer - Simple NTP server implementation that supports basic NTP queries and also control requests if so desired.",
+  "keywords": "time date ntp server",
+  "authors": {
+    "name": "Josh Heaton",
+    "url": "https://github.com/heaton84",
+    "maintainer": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heaton84/NTPServer"
+  },
+  "version": "1.0.0",
+  "framework": "arduino",
+  "platforms": "*",
+  "build": {
+    "libArchive": false
+  }
+}
