@@ -140,7 +140,7 @@ typedef struct s_ntp_control_packet
 
 class NTPServer
 {
-private:
+protected:
 
 	union
 	{
